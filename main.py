@@ -18,7 +18,7 @@ class Maze:
         # build an array
 
         for _ in range(self.height):
-            self.maze.append(['*' for i in range(self.width)])
+            self.maze.append([' ' for i in range(self.width)])
         self._genWalls()
 
 
@@ -50,9 +50,9 @@ class Maze:
 
         
         for i in self.walls:
-            self.maze[i[0]][i[1]] = "W"
+            self.maze[i[0]][i[1]] = "*"
 
-        self.maze[0][0] = '*' # the top left position is always the starting point for the maze.
+        self.maze[0][0] = ' ' # the top left position is always the starting point for the maze.
 
 
 
@@ -85,6 +85,7 @@ class Point:
     def __init__(self):
 
         self.pos = [0, 0]
+        self.moveSet = []
 
     # a route is a series of up/down/left/right movements to try to get to the end of the maze
     # it starts at a particular point in the maze and tries to get to the end
@@ -106,32 +107,34 @@ class Point:
         # this is chosen randomly
 
         randir = random.randint(1,4)
+        self.moveSet.append(randir) # append the move number so that this can be modified later on k
+        
 
         def north(self): 
             if self[0] < 1:
                 raise outOfBounds
-            elif board.maze[self[0]-1][self[1]] == 'W':
+            elif board.maze[self[0]-1][self[1]] == '*':
                 raise inWall
             self[0] -= 1
 
         def south(self): 
             if self[0] > 18:
                 raise outOfBounds
-            elif board.maze[self[0]+1][self[1]] == 'W':
+            elif board.maze[self[0]+1][self[1]] == '*':
                 raise inWall
             self[0] += 1
 
         def west(self): 
             if self[1] < 1:
                 raise outOfBounds
-            elif board.maze[self[0]][self[1]-1] == 'W':
+            elif board.maze[self[0]][self[1]-1] == '*':
                 raise inWall
             self[1] -= 1
 
         def east(self): 
             if self[1] > 18:
                 raise outOfBounds
-            elif board.maze[self[0]][self[1]+1] == 'W':
+            elif board.maze[self[0]][self[1]+1] == '*':
                 raise inWall
             self[1] += 1
 
@@ -171,6 +174,8 @@ maze = Maze(20, 20)
 maze.printMaze()
 loc = Point() # create the point 
 _initmove(loc, maze)
+
+print(loc.moveSet)
 
 # what needs to be done:
 # add check to see if the space that is going to be moved into has a wall in it
