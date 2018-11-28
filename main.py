@@ -110,28 +110,28 @@ class Point:
         def north(self): 
             if self[0] < 1:
                 raise outOfBounds
-            elif board.maze[x][y] == 'W':
+            elif board.maze[self[0]-1][self[1]] == 'W':
                 raise inWall
             self[0] -= 1
 
         def south(self): 
             if self[0] > 18:
                 raise outOfBounds
-            elif board.maze[x][y] == 'W':
+            elif board.maze[self[0]+1][self[1]] == 'W':
                 raise inWall
             self[0] += 1
 
         def west(self): 
             if self[1] < 1:
                 raise outOfBounds
-            elif board.maze[x][y] == 'W':
+            elif board.maze[self[0]][self[1]-1] == 'W':
                 raise inWall
             self[1] -= 1
 
         def east(self): 
             if self[1] > 18:
                 raise outOfBounds
-            elif board.maze[x][y] == 'W':
+            elif board.maze[self[0]][self[1]+1] == 'W':
                 raise inWall
             self[1] += 1
 
@@ -174,5 +174,10 @@ _initmove(loc, maze)
 
 # what needs to be done:
 # add check to see if the space that is going to be moved into has a wall in it
-# if so, raise an exception and stop that from happening
+# if so, raise an exception and stop that from happening * DONE
+
+# create a list of all of the movements that were made by the object during the time
+# and mix them up by moving parts of them between each other
+
+
 
