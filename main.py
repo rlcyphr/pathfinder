@@ -4,6 +4,8 @@ import random
 
 class AlreadyExists(BaseException): pass
 class outOfBounds(BaseException): pass
+class inWall(BaseException): pass
+
 
 # this is for randomising the position of walls inside the maze 
 
@@ -77,7 +79,7 @@ class Maze:
         self._createArray()
 
 
-class Route:
+class Point:
 
 
     def __init__(self):
@@ -87,12 +89,16 @@ class Route:
     # a route is a series of up/down/left/right movements to try to get to the end of the maze
     # it starts at a particular point in the maze and tries to get to the end
 
+    def setPos(self, m, x, y, replace):
+        """Set a position of the maze to something particular."""
+        m.maze[x][y] = replace
+
     def getPos(self):
 
         print(self.pos)
         print(self.pos[0], self.pos[1])
 
-    def makeMove(self):
+    def makeMove(self, board):
 
         """Allows the object to make a move to a square that is horizontally or vertically bordering it."""
 
@@ -100,38 +106,33 @@ class Route:
         # this is chosen randomly
 
         randir = random.randint(1,4)
-        print(self.pos[0])
 
         def north(self): 
-
-            print("Running the north function.")
-
             if self[0] < 1:
                 raise outOfBounds
+            elif board.maze[x][y] == 'W':
+                raise inWall
             self[0] -= 1
 
         def south(self): 
-
-            print("Running the south function.")
-
             if self[0] > 18:
                 raise outOfBounds
+            elif board.maze[x][y] == 'W':
+                raise inWall
             self[0] += 1
 
         def west(self): 
-
-            print("Running the west function.")
-
             if self[1] < 1:
                 raise outOfBounds
+            elif board.maze[x][y] == 'W':
+                raise inWall
             self[1] -= 1
 
         def east(self): 
-
-            print("Running the east function.")
-
             if self[1] > 18:
                 raise outOfBounds
+            elif board.maze[x][y] == 'W':
+                raise inWall
             self[1] += 1
 
         directions = {1: north, 2: south, 3: east, 4: west}
@@ -141,9 +142,13 @@ class Route:
 
         try:
             directions[randir](self.pos)
-            self.getPos()
         except outOfBounds:
+            # the movement is not in the boundaries of the maze
             pass
+        except inWall:
+            # is inside a wall
+            pass
+
 
         # 'pos' refers to the current position of the object that is trying to find a path.
         # if the north function is chosen, it checks if the target position is outside the
@@ -153,20 +158,21 @@ class Route:
         # where x is the horizontal axis and y is the vertical axis.
 
     
-
-
-
-
-
+def _initmove(ins, m):
+    # run the initial set of moves for the program
+    for _ in range(100):
+        ins.makeMove(m)
+    ins.setPos(m, ins.pos[0], ins.pos[1], '+')
+    ins.getPos()
+    m.printMaze()
 
 
 maze = Maze(20, 20)
 maze.printMaze()
+loc = Point() # create the point 
+_initmove(loc, maze)
 
-loc = Route() # create the route 
+# what needs to be done:
+# add check to see if the space that is going to be moved into has a wall in it
+# if so, raise an exception and stop that from happening
 
-loc.getPos()
-
-loc.makeMove()
-
-loc.getPos()
